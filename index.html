@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boundary — cloud AI help, personal data stays on this device</title>
+<link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Boundary</h1>
+  <p class="sub">Get cloud AI help with a case note while names, health details and contact data stay on this laptop — found on device, checked twice, and shown to you before anything is sent.</p></div></div>
+  <div class="tools"><span id="mode" class="pill"></span><button id="warm" type="button">Turn on on-device AI</button>
+  <button id="rec" type="button" class="rec">● Record demo</button><span id="recStatus" class="small"></span></div>
+</header>
+<main>
+  <section class="steps">
+    <article class="step" id="s1">
+      <h2><span class="n">1</span> Your note <span class="where w-local">stays here</span></h2>
+      <textarea id="note" rows="7" spellcheck="false" placeholder="Paste a case note…"></textarea>
+      <div class="row"><button id="sample" type="button" class="ghost">Load sample note</button>
+        <label>Task <select id="task"></select></label>
+        <button id="prep" type="button" class="primary">Find personal data on device</button></div>
+      <p id="msg1" class="msg"></p>
+    </article>
+    <article class="step" id="s2" hidden>
+      <h2><span class="n">2</span> Kept back on this device <span id="s2badge" class="where w-dev">Gemini Nano · on device</span></h2>
+      <p class="small">Untick anything that is fine to share, or add what was missed. The cloud only ever sees the right-hand text.</p>
+      <div class="split"><ul id="chips" class="chips"></ul>
+        <div><h3>Exactly what will leave this device</h3><pre id="outgoing" class="out"></pre></div></div>
+      <div class="row"><input id="addVal" placeholder="Something it missed (exact words)"><select id="addCls"></select>
+        <button id="add" type="button" class="ghost">Keep back</button>
+        <button id="send" type="button" class="primary">Send to cloud model</button></div>
+      <p id="msg2" class="msg"></p>
+    </article>
+    <article class="step" id="s3" hidden>
+      <h2><span class="n">3</span> Answer, restored on this device <span class="where w-cloud">Gemini · cloud</span></h2>
+      <div class="split"><div><h3>What the cloud wrote</h3><pre id="raw" class="out"></pre></div>
+        <div><h3>With the real details put back (locally)</h3><pre id="final" class="out final"></pre></div></div>
+      <div class="row"><button id="copy" type="button" class="ghost">Copy final text</button></div>
+      <p id="msg3" class="msg"></p>
+    </article>
+  </section>
+  <aside id="ledger" class="ledger"></aside>
+</main>
+<footer class="small">Where each step runs: find personal data and re-check the outgoing text — <b>only on device</b> (fails closed, never falls back to cloud) · task — <b>only in cloud</b>, placeholders only · check the answer — <b>prefer on device</b> (it holds placeholders only) · putting details back — <b>this page, no model</b>.
+Built with Firebase AI Logic hybrid inference.</footer>
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>

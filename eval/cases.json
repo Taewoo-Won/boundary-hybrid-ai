@@ -1,0 +1,241 @@
+{
+ "note": "Synthetic notes — invented people, example.* domains, test card/fake numbers. Labels = every span that must not reach the cloud.",
+ "cases": [
+  {
+   "id": "c1",
+   "text": "Client Maria Lopez (DOB 1979-02-03) lives at 14 Elm Street, Springfield. She was referred by Hope Clinic for panic attacks. Call 555-201-4477.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Maria Lopez"
+    },
+    {
+     "cls": "DOB",
+     "value": "1979-02-03"
+    },
+    {
+     "cls": "ADDRESS",
+     "value": "14 Elm Street, Springfield"
+    },
+    {
+     "cls": "ORG",
+     "value": "Hope Clinic"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "panic attacks"
+    },
+    {
+     "cls": "PHONE",
+     "value": "555-201-4477"
+    }
+   ]
+  },
+  {
+   "id": "c2",
+   "text": "Met with Tom Becker today. Tom's SSN on file is 123-45-6789; he asked to switch his email to tbecker@example.com.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Tom Becker"
+    },
+    {
+     "cls": "NAME",
+     "value": "Tom"
+    },
+    {
+     "cls": "ID",
+     "value": "123-45-6789"
+    },
+    {
+     "cls": "EMAIL",
+     "value": "tbecker@example.com"
+    }
+   ]
+  },
+  {
+   "id": "c3",
+   "text": "Applicant Lee Jiwoo, RRN 900101-2345678, reports type 2 diabetes and is on insulin. Home: 22 Seoul-ro 3-gil, Mapo-gu.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Lee Jiwoo"
+    },
+    {
+     "cls": "ID",
+     "value": "900101-2345678"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "type 2 diabetes"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "insulin"
+    },
+    {
+     "cls": "ADDRESS",
+     "value": "22 Seoul-ro 3-gil, Mapo-gu"
+    }
+   ]
+  },
+  {
+   "id": "c4",
+   "text": "Employee Priya Nair complained that her manager Daniel Ortiz shared her pregnancy news with the team. Reach Priya at +44 20 7946 0958.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Priya Nair"
+    },
+    {
+     "cls": "NAME",
+     "value": "Daniel Ortiz"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "pregnancy"
+    },
+    {
+     "cls": "NAME",
+     "value": "Priya"
+    },
+    {
+     "cls": "PHONE",
+     "value": "+44 20 7946 0958"
+    }
+   ]
+  },
+  {
+   "id": "c5",
+   "text": "Refund requested: card 4111 1111 1111 1111 charged twice. Customer: Ahmed Khan, ahmed.khan@example.org.",
+   "spans": [
+    {
+     "cls": "ID",
+     "value": "4111 1111 1111 1111"
+    },
+    {
+     "cls": "NAME",
+     "value": "Ahmed Khan"
+    },
+    {
+     "cls": "EMAIL",
+     "value": "ahmed.khan@example.org"
+    }
+   ]
+  },
+  {
+   "id": "c6",
+   "text": "Patient Eleanor Wright, born 1948-11-30, fell at home (8 Birch Lane, Leeds) and has early dementia. Daughter Sarah Wright will call back on 07700 900123.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Eleanor Wright"
+    },
+    {
+     "cls": "DOB",
+     "value": "1948-11-30"
+    },
+    {
+     "cls": "ADDRESS",
+     "value": "8 Birch Lane, Leeds"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "early dementia"
+    },
+    {
+     "cls": "NAME",
+     "value": "Sarah Wright"
+    },
+    {
+     "cls": "PHONE",
+     "value": "07700 900123"
+    }
+   ]
+  },
+  {
+   "id": "c7",
+   "text": "Tenant Kofi Mensah at Flat 3, 90 River Road is two months behind on rent after losing his job at Northgate Logistics.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Kofi Mensah"
+    },
+    {
+     "cls": "ADDRESS",
+     "value": "Flat 3, 90 River Road"
+    },
+    {
+     "cls": "ORG",
+     "value": "Northgate Logistics"
+    }
+   ]
+  },
+  {
+   "id": "c8",
+   "text": "Student Chen Wei (ID 2023-118842) disclosed ADHD and anxiety; tutor Ms. Grace Park recommends extra exam time.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Chen Wei"
+    },
+    {
+     "cls": "ID",
+     "value": "2023-118842"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "ADHD"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "anxiety"
+    },
+    {
+     "cls": "NAME",
+     "value": "Grace Park"
+    }
+   ]
+  },
+  {
+   "id": "c9",
+   "text": "Volunteer Ana Souza (ana.souza@example.net, 555 019 2233) is HIV positive and asked that this stay confidential.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Ana Souza"
+    },
+    {
+     "cls": "EMAIL",
+     "value": "ana.souza@example.net"
+    },
+    {
+     "cls": "PHONE",
+     "value": "555 019 2233"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "HIV positive"
+    }
+   ]
+  },
+  {
+   "id": "c10",
+   "text": "Case 7: Mr. Ivan Petrov, 61, Ukrainian refugee, living at 5 Station Road, Hull, needs a letter for his GP about high blood pressure.",
+   "spans": [
+    {
+     "cls": "NAME",
+     "value": "Ivan Petrov"
+    },
+    {
+     "cls": "ADDRESS",
+     "value": "5 Station Road, Hull"
+    },
+    {
+     "cls": "HEALTH",
+     "value": "high blood pressure"
+    }
+   ]
+  }
+ ]
+}

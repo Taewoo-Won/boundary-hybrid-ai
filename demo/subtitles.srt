@@ -1,0 +1,59 @@
+1
+00:00:00,000 --> 00:00:07,500
+Caseworkers write notes full of personal data.
+Cloud AI could turn them into emails or handovers in seconds —
+
+2
+00:00:07,500 --> 00:00:15,000
+but pasting a note sends a client's name and diagnosis to a server.
+Boundary splits that job in two.
+
+3
+00:00:15,000 --> 00:00:30,000
+Here is a note about a client: her name, date of birth, address,
+her clinic, panic attacks, a medication, her phone and e-mail.
+
+4
+00:00:30,000 --> 00:00:42,000
+Step one runs only on this device. Gemini Nano, through
+Firebase AI Logic in only-on-device mode, finds the personal data.
+
+5
+00:00:42,000 --> 00:00:55,000
+Simple rules catch phone numbers and e-mails;
+the model catches names, places and health details.
+
+6
+00:00:55,000 --> 00:01:20,000
+Each item shows who found it. The ledger on the right confirms:
+this call ran on the device and sent nothing.
+
+7
+00:01:20,000 --> 00:01:40,000
+This is exactly what the cloud will see — placeholders,
+each with a short hint Nano wrote on device, like "the client, she".
+
+8
+00:01:40,000 --> 00:01:55,000
+If anything still looks personal, the send button locks.
+Right before sending, Nano re-checks the outgoing text on device.
+
+9
+00:01:55,000 --> 00:02:08,000
+Step two runs only in the cloud, where a bigger model
+writes a better email. It never saw her name.
+
+10
+00:02:08,000 --> 00:02:20,000
+Back on the page, the real details are put back locally —
+no model involved.
+
+11
+00:02:20,000 --> 00:02:35,000
+A prefer-on-device check reads the answer for data the cloud invented.
+The ledger shows every call, where it ran, and what left the device.
+
+12
+00:02:35,000 --> 00:02:45,000
+If the on-device model is not available, Boundary stops
+instead of falling back to the cloud.

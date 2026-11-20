@@ -1,0 +1,29 @@
+# Build and publish the app to GitHub Pages (the judges' test URL).
+# Repository secrets: FIREBASE_WEB_CONFIG (public web config JSON), RECAPTCHA_SITE_KEY, APPCHECK_DEBUG_TOKEN (optional).
+name: pages
+on: { push: { branches: [main] }, workflow_dispatch: {} }
+permissions: { contents: read, pages: write, id-token: write }
+concurrency: { group: pages, cancel-in-progress: true }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22, cache: npm }
+      - run: npm ci || npm install
+      - run: npm test
+      - run: npx vite build --base "/${GITHUB_REPOSITORY#*/}/"
+        env:
+          VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
+          VITE_RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
+          VITE_APPCHECK_DEBUG_TOKEN: ${{ secrets.APPCHECK_DEBUG_TOKEN }}
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: dist }
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: { name: github-pages, url: "${{ steps.d.outputs.page_url }}" }
+    steps:
+      - id: d
+        uses: actions/deploy-pages@v4

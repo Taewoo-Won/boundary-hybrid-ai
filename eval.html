@@ -1,0 +1,6 @@
+<!doctype html><meta charset="utf-8"><title>Boundary — on-device reliability eval</title>
+<style>body{font:15px/1.5 system-ui;margin:24px;max-width:860px}#res{font:600 16px ui-monospace,monospace;background:#e3efe7;padding:12px;white-space:pre-wrap}</style>
+<h1>On-device reliability eval</h1>
+<p>Runs Gemini Nano (only on device) over 10 synthetic notes with 44 labelled personal-data spans, then re-checks the redacted text, and shows recall here. Also downloads <code>device_spans.json</code> for <code>node eval/score.js</code>.</p>
+<button id="go">Run on-device eval</button><pre id="res"></pre><pre id="log"></pre>
+<script type="module" src="/eval/page.js"></script>
