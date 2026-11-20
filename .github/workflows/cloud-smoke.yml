@@ -1,0 +1,20 @@
+# One request to the cloud model with the public web config — shows whether the cloud step works
+# (API enabled, key restrictions, App Check enforcement) before a demo. Run by hand.
+name: cloud-smoke
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "cloud model"
+        default: gemini-3.5-flash-lite
+permissions: { contents: read }
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with: { node-version: 22 }
+      - run: node scripts/cloud-smoke.mjs
+        env:
+          MODEL: ${{ inputs.model }}
