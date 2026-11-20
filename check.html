@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boundary — setup check</title>
+<link rel="stylesheet" href="/src/style.css">
+<style>main{display:block;max-width:760px}.out{min-height:0}</style>
+</head>
+<body>
+<header class="top"><div class="brand"><span class="mark" aria-hidden="true"></span><div><h1>Setup check</h1>
+<p class="sub">Two checks before a demo: the cloud model answers through Firebase AI Logic with App Check, and this browser can run Gemini Nano on device. Nothing personal is sent — the cloud check sends one fixed sentence.</p></div></div></header>
+<main>
+  <article class="step"><h2><span class="n">1</span> Cloud model (Firebase AI Logic + App Check) <span class="where w-cloud">in the cloud</span></h2>
+    <div class="row"><button id="cloud" type="button" class="primary">Check cloud</button></div>
+    <pre id="cloudOut" class="out" hidden></pre></article>
+  <article class="step"><h2><span class="n">2</span> On-device model (Gemini Nano) <span class="where w-dev">on this device</span></h2>
+    <div class="row"><button id="device" type="button">Check this browser</button></div>
+    <pre id="deviceOut" class="out final" hidden></pre></article>
+  <p class="small"><a href="./">Back to Boundary</a></p>
+</main>
+<script type="module" src="/src/check.js"></script>
+</body>
+</html>
