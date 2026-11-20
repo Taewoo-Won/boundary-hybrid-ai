@@ -2,6 +2,13 @@
 // device[caseId] = spans from pass 1; recheck[caseId] = spans from the on-device re-check of the redacted text.
 import { patternSpans, applySpans, safeRole } from "../src/redact.js";
 
+const STOP = new Set(["the", "of", "and", "a", "an", "to", "in", "at", "for", "on", "de", "la", "el"]);
+const words = (t) => String(t).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 1 && !STOP.has(w));
+export function roleLeaksLabel(role, labelled) {
+  const rw = new Set(words(role));
+  return labelled.some((l) => words(l.value).some((w) => rw.has(w)));
+}
+
 export function score(cases, device = {}, recheck = {}) {
   const per = {};
   let total = 0, leaked = 0, leakCases = 0, roleLeaks = 0;
@@ -15,10 +22,11 @@ export function score(cases, device = {}, recheck = {}) {
       per[s.cls].n++; total++;
       if (r.text.includes(s.value)) { per[s.cls].leaked++; leaked++; caseLeak++; }
     }
-    // a role hint that survives safeRole must not contain any labelled value
+    // a role hint that survives safeRole must not share any word with any labelled value —
+    // including values the device missed (those are not in r.map, so safeRole could not filter them)
     for (const s of device[c.id] ?? []) {
       const role = safeRole(s.role, [...r.map.values()]);
-      if (role && c.spans.some((l) => role.toLowerCase().includes(l.value.toLowerCase()))) roleLeaks++;
+      if (role && roleLeaksLabel(role, c.spans)) roleLeaks++;
     }
     if (caseLeak) leakCases++;
   }

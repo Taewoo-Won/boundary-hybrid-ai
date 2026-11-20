@@ -25,4 +25,4 @@ A hybrid split where each side does what it is good at, with three modes each ch
 Richer on-device role hints (relationships between people in a note); a Chrome extension for web forms and e-mail; per-organization rules via Remote Config.
 
 ## Try it
-Live: **[test URL]** · Code: **[GitHub URL]** (Apache-2.0). Without a Firebase config the app runs in a clearly labelled demo mode.
+Live: **https://taewoo-won.github.io/boundary-hybrid-ai/** · Code: **https://github.com/Taewoo-Won/boundary-hybrid-ai** (Apache-2.0). Without a Firebase config the app runs in a clearly labelled demo mode.

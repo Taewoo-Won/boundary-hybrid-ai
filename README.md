@@ -29,6 +29,9 @@ We measure it instead of assuming it (`eval/`): 10 synthetic notes with 44 label
 
 ![Boundary in demo mode](docs/screen_demo.png)
 
+## Try it
+Live: https://taewoo-won.github.io/boundary-hybrid-ai/ (Google Chrome desktop with Gemini Nano; the on-device model downloads on first use) · Boundary eval: https://taewoo-won.github.io/boundary-hybrid-ai/eval.html
+
 ## Run it
 ```bash
 npm install
