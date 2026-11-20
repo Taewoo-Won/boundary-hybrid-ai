@@ -1,5 +1,6 @@
 # Build and publish the app to GitHub Pages (the judges' test URL).
-# Repository secrets: FIREBASE_WEB_CONFIG (public web config JSON), RECAPTCHA_SITE_KEY, APPCHECK_DEBUG_TOKEN (optional).
+# Public config comes from src/firebase.public.json and src/appcheck.public.json. Never pass an App Check debug
+# token into this build: the page is public, so the token would ship in the bundle.
 name: pages
 on: { push: { branches: [main] }, workflow_dispatch: {} }
 permissions: { contents: read, pages: write, id-token: write }
@@ -17,7 +18,6 @@ jobs:
         env:
           VITE_FIREBASE_CONFIG: ${{ secrets.FIREBASE_WEB_CONFIG }}
           VITE_RECAPTCHA_SITE_KEY: ${{ secrets.RECAPTCHA_SITE_KEY }}
-          VITE_APPCHECK_DEBUG_TOKEN: ${{ secrets.APPCHECK_DEBUG_TOKEN }}
       - uses: actions/upload-pages-artifact@v3
         with: { path: dist }
   deploy:
