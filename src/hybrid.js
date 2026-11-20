@@ -1,7 +1,8 @@
 // Hybrid inference core: one model handle per mode, every call returns {text, source, ms}.
 // source = "on_device" | "in_cloud" | "mock" — shown to the user on every answer.
 import { initializeApp } from "firebase/app";
-import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider } from "firebase/app-check";
+import appCheckPublic from "./appcheck.public.json" with { type: "json" };
 import { getAI, getGenerativeModel, GoogleAIBackend, InferenceMode } from "firebase/ai";
 import { loadConfig } from "./config.js";
 import { SPAN_SCHEMA } from "./redact.js";
@@ -17,8 +18,11 @@ export function initHybrid() {
   const dbg = import.meta.env.VITE_APPCHECK_DEBUG_TOKEN;
   if (dbg) self.FIREBASE_APPCHECK_DEBUG_TOKEN = dbg;
   else if (import.meta.env.DEV) self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-  const siteKey = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-  if (siteKey) initializeAppCheck(app, { provider: new ReCaptchaV3Provider(siteKey), isTokenAutoRefreshEnabled: true });
+  // Firebase enforces App Check for AI Logic in every project (since 2026-11-02): no token, no cloud call.
+  // The deployed page uses a score-based reCAPTCHA Enterprise key (public, committed in appcheck.public.json);
+  // a reCAPTCHA v3 key from the build env still works for forks.
+  const provider = pickAppCheckProvider();
+  if (provider) initializeAppCheck(app, { provider, isTokenAutoRefreshEnabled: true });
   const ai = getAI(app, { backend: new GoogleAIBackend() });
   models = {
     mock: false,
@@ -32,6 +36,13 @@ export function initHybrid() {
     cloud: getGenerativeModel(ai, { mode: InferenceMode.ONLY_IN_CLOUD }),
   };
   return models;
+}
+
+export function pickAppCheckProvider(env = import.meta.env, pub = appCheckPublic) {
+  const ent = env?.VITE_RECAPTCHA_ENTERPRISE_SITE_KEY || pub?.recaptchaEnterpriseSiteKey;
+  if (ent) return new ReCaptchaEnterpriseProvider(ent);
+  const v3 = env?.VITE_RECAPTCHA_SITE_KEY;
+  return v3 ? new ReCaptchaV3Provider(v3) : null;
 }
 
 // Must be called from a user gesture (Chrome user-activation rule).

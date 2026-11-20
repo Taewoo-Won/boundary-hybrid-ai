@@ -1,0 +1,4 @@
+{
+  "_note": "Score-based reCAPTCHA Enterprise site key for App Check on the deployed page. Public by design (it ships in the page); restricted to the page's domain.",
+  "recaptchaEnterpriseSiteKey": ""
+}

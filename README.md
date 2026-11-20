@@ -38,11 +38,11 @@ npm run dev       # http://localhost:5173
 Without a Firebase config the app runs in **demo mode**: the whole UI, ledger and recorder work, step 1 uses the sample notes' hand labels (shown as "label"), and the cloud step echoes the outgoing text. The header says "Demo mode" so this is never confused with a real run.
 
 With Firebase (Chrome desktop 139+ with Gemini Nano available):
-1. Create a Firebase project, enable **Firebase AI Logic** (Gemini Developer API) and **App Check** (reCAPTCHA v3; debug tokens are fine for testing).
+1. Create a Firebase project, enable **Firebase AI Logic** (Gemini Developer API) and register the web app in **App Check** — Firebase enforces App Check for AI Logic in every project, so cloud calls without a token are refused. This repo uses a score-based **reCAPTCHA Enterprise** key restricted to the page's domain (`src/appcheck.public.json`); debug tokens are fine for local testing.
 2. Put the public web config in `.env.local`:
    ```
    VITE_FIREBASE_CONFIG={"apiKey":"…","authDomain":"…","projectId":"…","appId":"…"}
-   VITE_RECAPTCHA_SITE_KEY=…
+   VITE_RECAPTCHA_ENTERPRISE_SITE_KEY=…   # or VITE_RECAPTCHA_SITE_KEY for a reCAPTCHA v3 key
    ```
 3. `npm run dev`, click **Turn on on-device AI** (the model download must start from a user click), then load a sample note.
 
