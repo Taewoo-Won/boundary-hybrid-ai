@@ -5,7 +5,6 @@ import { initializeAppCheck, ReCaptchaEnterpriseProvider, ReCaptchaV3Provider } 
 import appCheckPublic from "./appcheck.public.json" with { type: "json" };
 import { getAI, getGenerativeModel, GoogleAIBackend, InferenceMode } from "firebase/ai";
 import { loadConfig } from "./config.js";
-import { SPAN_SCHEMA } from "./redact.js";
 import { shimLanguageModel } from "./promptShim.js";
 
 let models = null;
@@ -29,9 +28,12 @@ export function initHybrid() {
   models = {
     mock: false,
     // private step: must not leave the device — throws if Nano is unavailable
-    // Chrome Prompt API responseConstraint = JSON schema, so Nano answers with parseable spans.
     device: getGenerativeModel(ai, { mode: InferenceMode.ONLY_ON_DEVICE,
-      onDeviceParams: { createOptions: textOnly(), promptOptions: { responseConstraint: SPAN_SCHEMA } } }),
+      // 11/22: no responseConstraint. On a real PC (Chrome 157) prompts under a JSON-schema constraint hung for
+      // minutes in most runs and wedged the on-device model until Chrome restarted, while the same prompt without a
+      // constraint always returned. The prompt asks for JSON; parseSpans keeps only spans found verbatim in the note,
+      // and anything unparseable fails closed.
+      onDeviceParams: { createOptions: textOnly() } }),
     // safe-text step (checking the cloud answer, which holds placeholders only): device first, cloud fallback
     prefer: getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE, onDeviceParams: { createOptions: textOnly() } }),
     // heavy step: cloud (receives only what the ledger allows)

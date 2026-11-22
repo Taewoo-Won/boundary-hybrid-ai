@@ -23,7 +23,7 @@ test("hybrid.js opens the shared session on warm-up and releases SDK sessions af
   const src = readFileSync(new URL("../src/hybrid.js", import.meta.url), "utf8");
   assert.match(src, /await LM\.create\(textOnly\(\)\);/);
   assert.doesNotMatch(src, /keepAlive/);
-  assert.match(src, /createOptions: textOnly\(\), promptOptions/);
+  assert.doesNotMatch(src, /responseConstraint:/);  // 11/22: schema-constrained prompts wedged Nano on a real PC
   assert.match(src, /PREFER_ON_DEVICE, onDeviceParams: \{ createOptions: textOnly\(\) \}/);
   assert.doesNotMatch(src.match(/export function textOnly[\s\S]*?\n\}/)[0], /image/);
   assert.match(src, /finally \{ if \(which !== "cloud"\) freeDeviceSession\(models\[which\]\); \}/);
