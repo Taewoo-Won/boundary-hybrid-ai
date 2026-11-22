@@ -52,7 +52,6 @@ export function pickAppCheckProvider(env = import.meta.env, pub = appCheckPublic
 export function textOnly() {
   return { expectedInputs: [{ type: "text", languages: ["en"] }], expectedOutputs: [{ type: "text", languages: ["en"] }] };
 }
-let keepAlive = null; // one idle text session keeps the model loaded between calls (Chrome unloads it when none is open)
 
 // Must be called from a user gesture (Chrome user-activation rule).
 export async function warmDevice(onProgress) {
@@ -62,9 +61,9 @@ export async function warmDevice(onProgress) {
   // start stalled for minutes, while a plain prompt first (then the schema prompt) answered in seconds.
   const LM = globalThis.LanguageModel;
   if (LM && (await LM.availability()) === "available") {
-    keepAlive?.destroy?.();
-    keepAlive = await LM.create(textOnly());
-    await keepAlive.prompt("Reply with the single word OK.");
+    // One session at a time: on the same PC a second open session made the next create() or prompt() hang.
+    const s = await LM.create(textOnly());
+    try { await s.prompt("Reply with the single word OK."); } finally { s.destroy(); }
   }
   return true;
 }
