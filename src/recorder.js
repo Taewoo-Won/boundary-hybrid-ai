@@ -8,7 +8,7 @@ export function mountRecorder(btn, status) {
     let stream;
     try {
       stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { displaySurface: "browser", frameRate: 30 }, audio: true,   // tab audio carries the demo narration
+        video: { displaySurface: "browser", frameRate: 30, cursor: "never" }, audio: true,   // tab audio carries the demo narration
         preferCurrentTab: true, selfBrowserSurface: "include", surfaceSwitching: "exclude",
       });
     } catch (e) { status.textContent = `Recording not started (${e.name}).`; return; }

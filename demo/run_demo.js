@@ -29,7 +29,8 @@
   #demoCard .st .v{font:600 44px/1 Georgia,serif}#demoCard .st .k{font:500 14px/1.4 Inter,system-ui,sans-serif;color:#6b6e66;margin-top:8px}
   #demoCard .st.hi{background:#e3efe7;border-color:#b9d6c3}#demoCard .st.hi .v{color:#1f6f4a}
   #demoCard .fine{font:400 13px/1.5 Inter,system-ui,sans-serif;color:#6b6e66;margin-top:12px}
-  #demoCard .links{font:500 16px/1.7 ui-monospace,"Cascadia Mono",monospace;margin-top:24px}`;
+  #demoCard .links{font:500 17px/1.7 Inter,"Segoe UI",system-ui,sans-serif;margin-top:24px;color:#1d1f1c}
+  html{scrollbar-width:none}`;
   document.head.append(css);
   if (zoom !== 1) document.body.style.zoom = String(zoom);
   // on <html>, not <body>, so the UI zoom does not scale the overlays
