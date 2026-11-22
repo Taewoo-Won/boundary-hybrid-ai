@@ -2,29 +2,28 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { flattenPrompt, shimLanguageModel } from "../src/promptShim.js";
 
+const msg = (v) => [{ role: "user", content: [{ type: "text", value: v }] }];
+
 test("one user text message becomes a plain string; other shapes pass through", () => {
-  assert.equal(flattenPrompt([{ role: "user", content: [{ type: "text", value: "hi" }] }]), "hi");
-  const two = [{ role: "user", content: [{ type: "text", value: "a" }] }, { role: "assistant", content: [{ type: "text", value: "b" }] }];
+  assert.equal(flattenPrompt(msg("hi")), "hi");
+  const two = [...msg("a"), { role: "assistant", content: [{ type: "text", value: "b" }] }];
   assert.equal(flattenPrompt(two), two);
   const img = [{ role: "user", content: [{ type: "image", value: {} }] }];
   assert.equal(flattenPrompt(img), img);
   assert.equal(flattenPrompt("plain"), "plain");
 });
 
-test("shim wraps create so sessions receive the flattened prompt, once", async () => {
-  const seen = [];
-  const LM = { create: async () => ({ prompt: async (i, o) => { seen.push([i, o]); return "ok"; } }) };
+test("one shared session per options; destroy is a no-op; prompt() collects the stream; calls run one at a time", async () => {
+  let made = 0, destroyed = 0, active = 0, maxActive = 0;
+  const LM = { create: async () => { made++; return {
+    prompt: async () => "unused", destroy: () => destroyed++,
+    promptStreaming: (i) => (async function* () { active++; maxActive = Math.max(maxActive, active);
+      await new Promise((r) => setTimeout(r, 5)); yield `<${i}`; yield ">"; active--; })() }; } };
   assert.equal(shimLanguageModel(LM), true);
   assert.equal(shimLanguageModel(LM), false);
-  const s = await LM.create({});
-  await s.prompt([{ role: "user", content: [{ type: "text", value: "x" }] }], { responseConstraint: 1 });
-  assert.deepEqual(seen, [["x", { responseConstraint: 1 }]]);
-});
-
-test("prompt() is served from promptStreaming when the session has it", async () => {
-  const LM = { create: async () => ({ prompt: async () => "unused",
-    promptStreaming: (i, o) => (async function* () { yield `{"a":`; yield `"${i}"}`; })() }) };
-  shimLanguageModel(LM);
-  const s = await LM.create({});
-  assert.equal(await s.prompt([{ role: "user", content: [{ type: "text", value: "q" }] }], {}), '{"a":"q"}');
+  const opts = { expectedInputs: [{ type: "text" }] };
+  const a = await LM.create(opts), b = await LM.create({ ...opts, monitor: () => {} });
+  a.destroy(); b.destroy();
+  const [x, y] = await Promise.all([a.prompt(msg("x"), {}), b.prompt(msg("y"), {})]);
+  assert.deepEqual([x, y, made, destroyed, maxActive], ["<x>", "<y>", 1, 0, 1]);
 });

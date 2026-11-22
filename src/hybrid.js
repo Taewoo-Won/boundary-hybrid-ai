@@ -57,13 +57,10 @@ export function textOnly() {
 export async function warmDevice(onProgress) {
   if (!models || models.mock) return false;
   await models.device.initializeDeviceModel((p) => onProgress?.(p));
-  // 11/22: "ready" means a real prompt answered. On a real PC the first schema-constrained prompt after a cold Chrome
-  // start stalled for minutes, while a plain prompt first (then the schema prompt) answered in seconds.
   const LM = globalThis.LanguageModel;
   if (LM && (await LM.availability()) === "available") {
-    // One session at a time: on the same PC a second open session made the next create() or prompt() hang.
-    const s = await LM.create(textOnly());
-    try { await s.prompt("Reply with the single word OK."); } finally { s.destroy(); }
+    // Opens the page's one shared on-device session (promptShim.js), so the first real check starts warm.
+    await LM.create(textOnly());
   }
   return true;
 }
