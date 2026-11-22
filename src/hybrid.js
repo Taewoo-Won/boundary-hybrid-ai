@@ -49,6 +49,13 @@ export function pickAppCheckProvider(env = import.meta.env, pub = appCheckPublic
 export async function warmDevice(onProgress) {
   if (!models || models.mock) return false;
   await models.device.initializeDeviceModel((p) => onProgress?.(p));
+  // 11/22: "ready" means a real prompt answered. On a real PC the first schema-constrained prompt after a cold Chrome
+  // start stalled for minutes, while a plain prompt first (then the schema prompt) answered in seconds.
+  const LM = globalThis.LanguageModel;
+  if (LM && (await LM.availability()) === "available") {
+    const s = await LM.create();
+    try { await s.prompt("Reply with the single word OK."); } finally { s.destroy(); }
+  }
   return true;
 }
 
@@ -57,6 +64,16 @@ function sourceOf(resp, which) {
   const s = resp?.inferenceSource ?? resp?.response?.inferenceSource;
   if (s) return String(s).toLowerCase().includes("device") ? "on_device" : "in_cloud";
   return which === "cloud" ? "in_cloud" : "unknown"; // device: never assume — deviceSpans fails closed on "unknown"
+}
+
+// 11/22: the SDK keeps each on-device session alive until the next call; with several models that piled up and
+// Chrome's on-device model stopped answering after 4–5 calls on a real PC. Close it as soon as the answer is in.
+export function freeDeviceSession(model) {
+  const ad = model?.chromeAdapter;
+  if (!ad?.oldSession) return false;
+  try { ad.oldSession.destroy?.(); } catch { /* already gone */ }
+  ad.oldSession = undefined;
+  return true;
 }
 
 export async function run(which, parts, ledger, meta = {}) {
@@ -68,7 +85,9 @@ export async function run(which, parts, ledger, meta = {}) {
     ledger?.add(rec, parts);
     return { text, ...rec };
   }
-  const resp = await models[which].generateContent(parts);
+  let resp;
+  try { resp = await models[which].generateContent(parts); }
+  finally { if (which !== "cloud") freeDeviceSession(models[which]); }
   const r = resp.response ?? resp;
   const out = { which, text: r.text(), source: sourceOf(resp, which), ms: Math.round(performance.now() - t0), ...meta };
   ledger?.add(out, parts);
