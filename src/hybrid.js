@@ -6,6 +6,7 @@ import appCheckPublic from "./appcheck.public.json" with { type: "json" };
 import { getAI, getGenerativeModel, GoogleAIBackend, InferenceMode } from "firebase/ai";
 import { loadConfig } from "./config.js";
 import { SPAN_SCHEMA } from "./redact.js";
+import { shimLanguageModel } from "./promptShim.js";
 
 let models = null;
 
@@ -23,6 +24,7 @@ export function initHybrid() {
   // a reCAPTCHA v3 key from the build env still works for forks.
   const provider = pickAppCheckProvider();
   if (provider) initializeAppCheck(app, { provider, isTokenAutoRefreshEnabled: true });
+  shimLanguageModel(); // must run before the SDK captures LanguageModel — see promptShim.js
   const ai = getAI(app, { backend: new GoogleAIBackend() });
   models = {
     mock: false,
