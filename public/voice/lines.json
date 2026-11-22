@@ -1,0 +1,14 @@
+{
+ "s00": "Caseworkers write case notes full of names, diagnoses and addresses. Cloud AI could turn a note into an e-mail in seconds, but pasting it sends a client's private details to a server. Boundary splits that job in two.",
+ "s01": "Here is a note about a client: her name, date of birth, address, clinic, a diagnosis, a medication, her daughter, a phone number and an e-mail.",
+ "s02": "Step one runs only on this laptop. Gemini Nano, through Firebase AI Logic in only-on-device mode, finds the personal data. Simple rules catch phone numbers, e-mails and dates of birth. The model catches names, places and health details. If the on-device model is not available, Boundary stops. It never falls back to the cloud.",
+ "s03": "Each item shows who found it, and the ledger on the right confirms that this call ran on the device and sent nothing.",
+ "s04": "This is exactly what the cloud will see: placeholders, each with a short role hint that Nano wrote on the device, like the client, or the daughter, so the cloud can still write naturally.",
+ "s05": "Detection is best effort, so a person reviews this text before it leaves, and can keep back anything the model missed with one click.",
+ "s06": "And if anything still looks personal, say, a phone number left in, the send button locks.",
+ "s07": "Right before sending, Nano checks the outgoing text on the device one more time.",
+ "s08": "Step two runs only in the cloud. A larger Gemini model writes the e-mail from placeholders only. It never sees her name.",
+ "s09": "Back on the page, the real details are put back locally, with no model involved. A prefer-on-device check also reads the answer for anything personal the cloud may have invented.",
+ "s10": "The ledger shows every call, where it ran, and exactly how many characters left the laptop.",
+ "s11": "On our test notes, rules alone keep back about thirty percent of the personal details. With Gemini Nano on the device, about ninety. Boundary. Cloud help, with the boundary on your side."
+}

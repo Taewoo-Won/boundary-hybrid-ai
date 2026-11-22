@@ -8,12 +8,13 @@ export function mountRecorder(btn, status) {
     let stream;
     try {
       stream = await navigator.mediaDevices.getDisplayMedia({
-        video: { displaySurface: "browser", frameRate: 24 }, audio: false,   // 11/22: lighter capture — VP9 6 Mbps starved on-device Gemini Nano on a real PC
+        video: { displaySurface: "browser", frameRate: 30 }, audio: true,   // tab audio carries the demo narration
         preferCurrentTab: true, selfBrowserSurface: "include", surfaceSwitching: "exclude",
       });
     } catch (e) { status.textContent = `Recording not started (${e.name}).`; return; }
-    const type = ["video/webm;codecs=vp8", "video/webm"].find((t) => MediaRecorder.isTypeSupported(t));
-    rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 2_500_000 });
+    const type = ["video/webm;codecs=vp8,opus", "video/webm"].find((t) => MediaRecorder.isTypeSupported(t));
+    // 11/22: the Nano stalls blamed on recording were the JSON-schema constraint (see promptShim.js); VP8 keeps CPU low.
+    rec = new MediaRecorder(stream, { mimeType: type, videoBitsPerSecond: 6_000_000, audioBitsPerSecond: 128_000 });
     chunks = [];
     rec.ondataavailable = (e) => e.data.size && chunks.push(e.data);
     rec.onstop = () => {
