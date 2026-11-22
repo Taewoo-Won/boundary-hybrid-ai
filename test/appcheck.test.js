@@ -21,7 +21,10 @@ test("hybrid.js wires the committed key into initializeAppCheck", () => {
 // 11/22 real-PC run: Nano stalled on a cold schema prompt and after 4–5 calls with sessions held open.
 test("hybrid.js warms with a plain prompt and frees on-device sessions after each call", () => {
   const src = readFileSync(new URL("../src/hybrid.js", import.meta.url), "utf8");
-  assert.match(src, /s\.prompt\("Reply with the single word OK\."\)/);
+  assert.match(src, /keepAlive\.prompt\("Reply with the single word OK\."\)/);
+  assert.match(src, /createOptions: textOnly\(\), promptOptions/);
+  assert.match(src, /PREFER_ON_DEVICE, onDeviceParams: \{ createOptions: textOnly\(\) \}/);
+  assert.doesNotMatch(src.match(/export function textOnly[\s\S]*?\n\}/)[0], /image/);
   assert.match(src, /finally \{ if \(which !== "cloud"\) freeDeviceSession\(models\[which\]\); \}/);
   assert.match(src, /ad\.oldSession\.destroy\?\.\(\)/);
 });

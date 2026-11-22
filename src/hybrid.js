@@ -29,9 +29,9 @@ export function initHybrid() {
     // private step: must not leave the device — throws if Nano is unavailable
     // Chrome Prompt API responseConstraint = JSON schema, so Nano answers with parseable spans.
     device: getGenerativeModel(ai, { mode: InferenceMode.ONLY_ON_DEVICE,
-      onDeviceParams: { promptOptions: { responseConstraint: SPAN_SCHEMA } } }),
+      onDeviceParams: { createOptions: textOnly(), promptOptions: { responseConstraint: SPAN_SCHEMA } } }),
     // safe-text step (checking the cloud answer, which holds placeholders only): device first, cloud fallback
-    prefer: getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE }),
+    prefer: getGenerativeModel(ai, { mode: InferenceMode.PREFER_ON_DEVICE, onDeviceParams: { createOptions: textOnly() } }),
     // heavy step: cloud (receives only what the ledger allows)
     cloud: getGenerativeModel(ai, { mode: InferenceMode.ONLY_IN_CLOUD }),
   };
@@ -45,6 +45,13 @@ export function pickAppCheckProvider(env = import.meta.env, pub = appCheckPublic
   return v3 ? new ReCaptchaV3Provider(v3) : null;
 }
 
+// 11/22: the SDK's default create options ask for text AND image input. Boundary only sends text, and on a real PC
+// the image-capable session stalled for minutes while a text-only session answered in seconds — so ask for text only.
+export function textOnly() {
+  return { expectedInputs: [{ type: "text", languages: ["en"] }], expectedOutputs: [{ type: "text", languages: ["en"] }] };
+}
+let keepAlive = null; // one idle text session keeps the model loaded between calls (Chrome unloads it when none is open)
+
 // Must be called from a user gesture (Chrome user-activation rule).
 export async function warmDevice(onProgress) {
   if (!models || models.mock) return false;
@@ -53,8 +60,9 @@ export async function warmDevice(onProgress) {
   // start stalled for minutes, while a plain prompt first (then the schema prompt) answered in seconds.
   const LM = globalThis.LanguageModel;
   if (LM && (await LM.availability()) === "available") {
-    const s = await LM.create();
-    try { await s.prompt("Reply with the single word OK."); } finally { s.destroy(); }
+    keepAlive?.destroy?.();
+    keepAlive = await LM.create(textOnly());
+    await keepAlive.prompt("Reply with the single word OK.");
   }
   return true;
 }
