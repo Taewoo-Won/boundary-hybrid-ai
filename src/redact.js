@@ -53,8 +53,10 @@ export function leakCheck(redacted) { return patternSpans(redacted); }
 
 export const SPAN_SCHEMA = {
   type: "object", required: ["spans"],
-  properties: { spans: { type: "array", items: { type: "object", required: ["cls", "value"],
-    properties: { cls: { type: "string", enum: CLASSES }, value: { type: "string" }, role: { type: "string", maxLength: 40 } } } } },
+  // 11/22: bounded on purpose. Without maxItems/maxLength a small model under a JSON grammar can keep adding items
+  // (or characters) until its token limit — on a real PC one detection call ran for minutes.
+  properties: { spans: { type: "array", maxItems: 24, items: { type: "object", required: ["cls", "value"],
+    properties: { cls: { type: "string", enum: CLASSES }, value: { type: "string", maxLength: 80 }, role: { type: "string", maxLength: 40 } } } } },
 };
 
 export const DEVICE_SCHEMA_PROMPT = (text) =>

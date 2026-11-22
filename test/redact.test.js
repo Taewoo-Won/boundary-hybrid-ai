@@ -40,3 +40,11 @@ test("device JSON parsing keeps only real substrings of known classes", () => {
   assert.deepEqual(parseSpans(raw, t), [{ cls: "NAME", value: "Ana Souza" }, { cls: "HEALTH", value: "HIV positive" }]);
   assert.equal(parseSpans("no json here", t), null);
 });
+
+// 11/22: an unbounded JSON grammar let on-device Nano run for minutes on a real PC.
+test("span schema is bounded (maxItems, maxLength)", async () => {
+  const { SPAN_SCHEMA } = await import("../src/redact.js");
+  const arr = SPAN_SCHEMA.properties.spans;
+  assert.ok(arr.maxItems > 0 && arr.maxItems <= 40);
+  assert.ok(arr.items.properties.value.maxLength > 0 && arr.items.properties.role.maxLength > 0);
+});
