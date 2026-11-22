@@ -19,6 +19,7 @@
   const say = (k) => new Promise((res) => {
     cap.textContent = lines[k] || ""; L(`say ${k}`);
     const a = new Audio(`${base}voice/${k}.mp3`);
+    a.muted = !!window._demoMute; // silent rehearsal: the clip still runs its full length
     const done = () => { res(); };
     a.onended = () => setTimeout(done, 450); a.onerror = () => setTimeout(done, 4000);
     a.play().catch(() => setTimeout(done, 6000));
