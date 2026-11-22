@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { prepare, outgoing, askCloud } from "../src/pipeline.js";
+import { prepare, outgoing, askCloud, residualCheck } from "../src/pipeline.js";
 import { SAMPLES } from "../src/samples.js";
 import { Ledger } from "../src/ledger.js";
 
@@ -76,4 +76,13 @@ test("role hints reach the cloud only when they cannot identify", async () => {
   assert.equal(safeRole("born 1979", ["x"]), "");                  // digits
   assert.equal(safeRole("call me at a@example.com", ["x"]), "");   // pattern
   assert.equal(safeRole("the client, she", ["Maria Lopez"]), "the client, she");
+});
+
+test("re-check ignores spans that contain a placeholder (no Send loop)", async () => {
+  // 11/22 real run: Nano re-check returned "Best number [PHONE_1]" and "email [EMAIL_1]" as new personal data and locked Send again and again.
+  const out = { redacted: "Call Ana. Best number [PHONE_1], email [EMAIL_1]." };
+  const fn = async () => ({ spans: [{ cls: "PHONE", value: "Best number [PHONE_1]" }, { cls: "EMAIL", value: "email [EMAIL_1]" }, { cls: "NAME", value: "[NAME_1]" }, { cls: "NAME", value: "Ana" }] });
+  const r = await residualCheck(out, fn, new Ledger());
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.spans.map((x) => x.value), ["Ana"]);
 });

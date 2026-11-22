@@ -33,7 +33,10 @@ export function outgoing(text, spans, taskKey) {
 }
 
 const PH = /^\[[A-Z]+_\d+\]$/;
-const realSpans = (spans) => spans.filter((s) => !PH.test(s.value.trim()) && !/^\[?[A-Z]+_\d+\]?$/.test(s.value.trim()));
+// 11/22: a re-check span that contains a placeholder ("Best number [PHONE_1]", "email [EMAIL_1]") is not new personal data —
+// the placeholder is already kept back and the words around it are context. Counting it locked Send in a loop on a real run.
+const HAS_PH = /\[[A-Z]+_\d+\]/;
+const realSpans = (spans) => spans.filter((s) => { const v = s.value.trim(); return !PH.test(v) && !/^\[?[A-Z]+_\d+\]?$/.test(v) && !HAS_PH.test(v); });
 
 // Second on-device pass over the text that is about to leave: anything Nano still calls personal locks Send.
 export async function residualCheck(out, deviceSpansFn, ledger) {
