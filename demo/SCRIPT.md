@@ -1,5 +1,7 @@
 # Demo video — script and click order (target 2:40, limit 3:00)
 
+> **22 Nov 2026 — how the submitted video was made:** on the test PC (Windows, Chrome 157) in-tab recording froze Gemini Nano, so the video is stitched from screenshots taken step by step during a live run (`demo/build_video.py`, captions burned in; `demo/subtitles.srt` matches it). Video: https://youtu.be/-FGMXgGOFYs
+
 Record with the in-app **● Record demo** button (choose "This tab"). Chrome desktop with Gemini Nano, Firebase config set (header shows "Firebase AI Logic · hybrid", not "Demo mode").
 Before recording: open the app, click **Turn on on-device AI** once so the model is downloaded (the download should not be in the video), reload.
 Voice: read the lines below, or record silent and use `demo/subtitles.srt` (English subtitles are allowed by the rules).
