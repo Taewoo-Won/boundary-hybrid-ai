@@ -15,7 +15,10 @@ export function shimLanguageModel(LM = globalThis.LanguageModel) {
   LM.create = async (opts) => {
     const s = await create(opts);
     const p = s.prompt.bind(s), ps = s.promptStreaming?.bind(s);
-    s.prompt = (input, o) => p(flattenPrompt(input), o);
+    // Same PC: non-streaming prompt() with a responseConstraint never returned, promptStreaming() with the same
+    // text and schema finished in ~18 s — so prompt() is served by collecting the stream.
+    s.prompt = ps ? async (input, o) => { let out = ""; for await (const c of ps(flattenPrompt(input), o)) out += c; return out; }
+                  : (input, o) => p(flattenPrompt(input), o);
     if (ps) s.promptStreaming = (input, o) => ps(flattenPrompt(input), o);
     return s;
   };

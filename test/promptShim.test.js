@@ -20,3 +20,11 @@ test("shim wraps create so sessions receive the flattened prompt, once", async (
   await s.prompt([{ role: "user", content: [{ type: "text", value: "x" }] }], { responseConstraint: 1 });
   assert.deepEqual(seen, [["x", { responseConstraint: 1 }]]);
 });
+
+test("prompt() is served from promptStreaming when the session has it", async () => {
+  const LM = { create: async () => ({ prompt: async () => "unused",
+    promptStreaming: (i, o) => (async function* () { yield `{"a":`; yield `"${i}"}`; })() }) };
+  shimLanguageModel(LM);
+  const s = await LM.create({});
+  assert.equal(await s.prompt([{ role: "user", content: [{ type: "text", value: "q" }] }], {}), '{"a":"q"}');
+});
